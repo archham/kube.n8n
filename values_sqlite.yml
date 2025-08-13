@@ -1,0 +1,35 @@
+---
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: __FQDN__
+      paths:
+        - /
+  tls:
+    - hosts:
+        - __FQDN__
+
+main:
+  config:
+    n8n:
+      hide_usage_page: false
+  secret:
+    n8n:
+      encryption_key: "__ENC_KEY__"
+  resources:
+    limits:
+      memory: 2048Mi
+    requests:
+      memory: 512Mi
+  service:
+    type: NodePort
+    port: 5678
+
+  persistence:
+    enabled: true
+    type: dynamic
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+

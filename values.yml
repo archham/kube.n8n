@@ -1,0 +1,59 @@
+---
+image:
+  repository: n8nio/n8n
+  pullPolicy: Always
+  tag: latest
+
+main:
+  config:
+    n8n:
+      hide_usage_page: false
+    db:
+      type: postgresdb
+      postgresdb:
+        host: n8n-postgresql-0.n8n-postgresql-hl.__NAMESPACE__.svc.cluster.local
+        user: n8n
+    queue:
+      health:
+        check:
+          active: true
+      bull:
+        redis:
+          host: redis.__NAMESPACE__.svc.cluster.local
+          port: 6379
+  secret:
+    n8n:
+      encryption_key: "__ENC_KEY__"
+  extraEnv:
+    WEBHOOK_URL:
+      value: 'https://__FQDN__'
+    DB_POSTGRESDB_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: n8n-postgresql
+          key: password
+  resources:
+    limits:
+      memory: 2048Mi
+    requests:
+      memory: 512Mi
+  service:
+    type: NodePort
+    port: 5678
+  persistence:
+    enabled: true
+    type: dynamic
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: __FQDN__
+      paths:
+        - /
+  tls:
+    - hosts:
+        - __FQDN__
