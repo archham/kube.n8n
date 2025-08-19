@@ -25,6 +25,12 @@ main:
     n8n:
       encryption_key: "__ENC_KEY__"
   extraEnv:
+    GENERIC_TIMEZONE:
+      value: "Europe/Zurich"
+    N8N_METRICS:
+      value: "true"
+    QUEUE_HEALTH_CHECK_ACTIVE:
+      value: "true"
     WEBHOOK_URL:
       value: 'https://__FQDN__'
     DB_POSTGRESDB_PASSWORD:
