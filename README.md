@@ -32,15 +32,24 @@ helm install myn8n oci://8gears.container-registry.com/library/n8n --version __V
 
 ## Day2 Notes
 
-### Export credentials from within container
+### Export credentials and workflows from within container
 * https://docs.n8n.io/hosting/cli-commands/#export-workflows-and-credentials
 ```
 kubectl exec -it n8n-xxx -- /bin/sh
 mkdir -p backup/{wf,cred}
+
+env | grep N8N_ENCRYPTION_KEY > backup/key.env # must be same as on restore host in order to decrypt creds
 n8n export:workflow --backup --output=./backup/wf/
 n8n export:credentials --backup --output=./backup/cred/
 ```
+### Import credentials and workflows from within container
 ```
+kubectl exec -it n8n-xxx -- /bin/sh
+find backup/{wf,cred}
+env | grep N8N_ENCRYPTION_KEY  # must be same as on backup host in order to decrypt creds
+n8n import:workflow --separate --input=backup/wf
+n8n import:credentials --separate --input=backup/cred
+
 ```
 ```
 ```
